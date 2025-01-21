@@ -1,83 +1,61 @@
-# Multi-Tenant Django Application
+The error message you're encountering suggests two issues:
 
-This project is a multi-tenant Django web application designed for scalability, performance, and real-time communication. It includes a Django admin panel for managing tenants and users, ElasticSearch integration for efficient search functionality, and WebSockets for real-time notifications.
+1. **Line Ending Warning**: The warning about line endings (`LF will be replaced by CRLF`) is due to differences in line endings between Unix-based systems (LF) and Windows (CRLF). This is a common issue when working across different operating systems.
 
-## Features
+2. **Submodule Error**: The error `'frontend/' does not have a commit checked out` indicates that the `frontend` directory is likely a Git submodule, and it hasn't been initialized or updated properly.
 
-- **Multi-Tenant Architecture**: Each tenant has an isolated database schema using `django-tenants`.
-- **Django Admin Panel**: Customized to support multi-tenancy, allowing superusers to manage tenants and their users.
-- **Public & Private Schema**: Shared data is stored in a public schema, while tenant-specific data is stored in private schemas.
-- **ElasticSearch Integration**: Fast and efficient search functionality using the official Elasticsearch Python client.
-- **WebSockets for Notifications**: Real-time notifications implemented using Django Channels and a simple React frontend.
+Here's how you can address these issues:
 
-## Project Structure
+### Fixing Line Ending Warning
 
-- `apps/tenants`: Contains models and admin configurations for managing tenants.
-- `apps/public`: Models for shared resources accessible to all tenants.
-- `apps/search`: ElasticSearch integration for tenant-specific search.
-- `apps/notifications`: Models and WebSocket consumers for real-time notifications.
-- `frontend`: React app for displaying notifications.
+To address the line ending warning, you can configure Git to handle line endings appropriately:
 
-## Setup Instructions
+1. **Set Git to Automatically Handle Line Endings**:
 
-### Prerequisites
-
-- Docker and Docker Compose
-- Node.js and npm
-
-### Environment Variables
-
-Create a `.env` file in the project root with the following content:
-
-```
-DATABASE_URL=postgres://user:password@db:5432/dbname
-POSTGRES_DB=dbname
-POSTGRES_USER=user
-POSTGRES_PASSWORD=password
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@example.com
-DJANGO_SUPERUSER_PASSWORD=admin
-```
-
-### Running the Application
-
-1. **Build and Start the Containers**:
+   Run the following command to set Git to automatically convert line endings:
 
    ```bash
-   docker-compose up --build
+   git config --global core.autocrlf true
    ```
 
-2. **Access the Application**:
+   This setting will convert LF to CRLF when checking out text files on Windows, and convert CRLF to LF when committing.
 
-   - **Frontend**: [http://localhost:3000](http://localhost:3000)
-   - **Admin Panel**: [http://localhost:8000/admin](http://localhost:8000/admin)
+2. **Re-add the File**:
 
-3. **Create a Tenant**:
+   If the warning persists, you can force Git to re-add the file with the correct line endings:
 
-   - Log in to the admin panel using the superuser credentials.
-   - Add a new tenant and domain through the admin interface.
+   ```bash
+   git rm --cached entrypoint.sh
+   git add entrypoint.sh
+   ```
 
-## Testing
+### Fixing Submodule Error
 
-To run tests, use the following command:
+To resolve the submodule error, you need to initialize and update the submodule:
 
-```bash
-docker-compose exec web python manage.py test
-```
+1. **Initialize and Update Submodules**:
 
-## Additional Information
+   Run the following commands to initialize and update the submodule:
 
-- **ElasticSearch**: Ensure ElasticSearch is running on port 9200.
-- **Redis**: Used for WebSocket channels, ensure Redis is running on port 6379.
+   ```bash
+   git submodule init
+   git submodule update
+   ```
 
-## Code References
+2. **Check Submodule Status**:
 
-- Tenant Admin Configuration: `apps/tenants/admin.py` (startLine: 1, endLine: 13)
-- Tenant Models: `apps/tenants/models.py` (startLine: 1, endLine: 16)
-- Search Document Model: `apps/search/models.py` (startLine: 1, endLine: 20)
-- Notification Model: `apps/notifications/models.py` (startLine: 1, endLine: 17)
-- Shared Resource Model: `apps/public/models.py` (startLine: 1, endLine: 12)
+   Verify the status of the submodule to ensure it's properly checked out:
 
-## License
+   ```bash
+   git submodule status
+   ```
 
-This project is licensed under the MIT License.
+3. **Add Submodule Changes**:
+
+   If there are changes in the submodule, you can add them:
+
+   ```bash
+   git add frontend
+   ```
+
+After performing these steps, try running `git add .` again to see if the issues are resolved. If you encounter any further issues, feel free to ask for more help!
