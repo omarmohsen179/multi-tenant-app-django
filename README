@@ -1,0 +1,83 @@
+# Multi-Tenant Django Application
+
+This project is a multi-tenant Django web application designed for scalability, performance, and real-time communication. It includes a Django admin panel for managing tenants and users, ElasticSearch integration for efficient search functionality, and WebSockets for real-time notifications.
+
+## Features
+
+- **Multi-Tenant Architecture**: Each tenant has an isolated database schema using `django-tenants`.
+- **Django Admin Panel**: Customized to support multi-tenancy, allowing superusers to manage tenants and their users.
+- **Public & Private Schema**: Shared data is stored in a public schema, while tenant-specific data is stored in private schemas.
+- **ElasticSearch Integration**: Fast and efficient search functionality using the official Elasticsearch Python client.
+- **WebSockets for Notifications**: Real-time notifications implemented using Django Channels and a simple React frontend.
+
+## Project Structure
+
+- `apps/tenants`: Contains models and admin configurations for managing tenants.
+- `apps/public`: Models for shared resources accessible to all tenants.
+- `apps/search`: ElasticSearch integration for tenant-specific search.
+- `apps/notifications`: Models and WebSocket consumers for real-time notifications.
+- `frontend`: React app for displaying notifications.
+
+## Setup Instructions
+
+### Prerequisites
+
+- Docker and Docker Compose
+- Node.js and npm
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following content:
+
+```
+DATABASE_URL=postgres://user:password@db:5432/dbname
+POSTGRES_DB=dbname
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=admin
+```
+
+### Running the Application
+
+1. **Build and Start the Containers**:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Access the Application**:
+
+   - **Frontend**: [http://localhost:3000](http://localhost:3000)
+   - **Admin Panel**: [http://localhost:8000/admin](http://localhost:8000/admin)
+
+3. **Create a Tenant**:
+
+   - Log in to the admin panel using the superuser credentials.
+   - Add a new tenant and domain through the admin interface.
+
+## Testing
+
+To run tests, use the following command:
+
+```bash
+docker-compose exec web python manage.py test
+```
+
+## Additional Information
+
+- **ElasticSearch**: Ensure ElasticSearch is running on port 9200.
+- **Redis**: Used for WebSocket channels, ensure Redis is running on port 6379.
+
+## Code References
+
+- Tenant Admin Configuration: `apps/tenants/admin.py` (startLine: 1, endLine: 13)
+- Tenant Models: `apps/tenants/models.py` (startLine: 1, endLine: 16)
+- Search Document Model: `apps/search/models.py` (startLine: 1, endLine: 20)
+- Notification Model: `apps/notifications/models.py` (startLine: 1, endLine: 17)
+- Shared Resource Model: `apps/public/models.py` (startLine: 1, endLine: 12)
+
+## License
+
+This project is licensed under the MIT License.
